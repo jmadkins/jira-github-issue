@@ -7,6 +7,7 @@ ruby '2.6.3'
 
 gem 'dotenv'
 gem 'faraday'
+gem 'hashie'
 
 group :development, :test do
   gem 'pry'

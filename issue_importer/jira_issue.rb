@@ -24,7 +24,7 @@ class JiraIssue
   end
 
   def body
-    (@values[27]).to_s
+    "#{@values[27]}\n\nPreviously was #{jira_key}."
   end
 
   def jira_key
@@ -41,13 +41,9 @@ class JiraIssue
     'jmadkins'
   end
 
-  def to_s
-    "#{title} - #{jira_key}"
-  end
-
   def to_params
     {
-      title: to_s,
+      title: title,
       body: body,
       assignee: assignee,
       labels: labels
