@@ -7,4 +7,8 @@ ruby '2.6.3'
 
 gem 'dotenv'
 gem 'faraday'
-gem 'rspec'
+
+group :development, :test do
+  gem 'pry'
+  gem 'rspec'
+end

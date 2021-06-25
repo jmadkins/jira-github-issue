@@ -1,13 +1,19 @@
+require 'csv'
 require 'dotenv/load'
-# require 'issue_importer/github_gateway'
-require_relative 'issue_importer/issue'
-# Dotenv.require_keys('GITHUB_USER', 'GITHUB_PASS')
+require 'pry'
+
+require_relative 'issue_importer/github_gateway'
+require_relative 'issue_importer/jira_issue'
 
 file_path = ARGV[0]
-document = Nokogiri::XML IO.read(file_path)
 
-issues = IO.foreach(file_path).map { |line| Issue.new(line) }
+issues = CSV.foreach(file_path, headers: true).map do |line|
+  JiraIssue.new(line)
+end
+
+gateway = GithubGateway.new(ENV['GITHUB_URL'], ENV['GITHUB_USER'], ENV['GITHUB_PASS'])
 issues.each do |issue|
-  puts issue.title
-  # call the github api once each line has been converted into an issue
+  puts issue.to_s
+  gateway.create_issue issue.to_params
+  sleep 3
 end
