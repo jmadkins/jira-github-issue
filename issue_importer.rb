@@ -11,9 +11,16 @@ issues = CSV.foreach(file_path, headers: true).map do |line|
   JiraIssue.new(line)
 end
 
-gateway = GithubGateway.new(ENV['GITHUB_URL'], ENV['GITHUB_USER'], ENV['GITHUB_PASS'])
+params = {
+  url: ENV['GITHUB_URL'],
+  username: ENV['GITHUB_USER'],
+  password: ENV['GITHUB_PASS'],
+  repo: 'mythcoders/ecclesia'
+}
+
+gateway = GithubGateway.new(params)
 issues.each do |issue|
-  puts issue.to_s
+  puts issue.title
   gateway.create_issue issue.to_params
-  sleep 3
+  sleep 2
 end

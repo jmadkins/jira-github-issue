@@ -4,14 +4,15 @@ require 'hashie'
 require 'mime-types'
 
 class GithubGateway
-  def initialize(url, username, password)
-    @url = url
-    @username = username
-    @password = password
+  def initialize(params)
+    @url = params[:url]
+    @username = params[:username]
+    @password = params[:password]
+    @repo = params[:repo]
   end
 
   def create_issue(issue)
-    conn = api_connection("#{@url}/repos/mythcoders/hubble/issues")
+    conn = api_connection("#{@url}/repos/#{@repo}/issues")
     response = conn.post { |req| req.body = JSON.dump(issue) }
 
     if response.success?
@@ -23,7 +24,7 @@ class GithubGateway
   end
 
   def get_issues
-    response = api_connection("#{@url}/repos/mythcoders/hubble/issues?per_page=100").get
+    response = api_connection("#{@url}/repos/#{@repo}/issues?per_page=100").get
     return JSON.parse(response.body).map { |p| Hashie::Mash.new(p) } if response.success?
 
     puts "❌ Issues not fetched - (#{response.status}) #{response.body}"
@@ -37,7 +38,7 @@ class GithubGateway
   end
 
   def update_issue(issue_number, issue)
-    conn = api_connection("#{@url}/repos/mythcoders/hubble/issues/#{issue_number}")
+    conn = api_connection("#{@url}/repos/#{@repo}/issues/#{issue_number}")
     response = conn.patch { |req| req.body = JSON.dump(issue) }
 
     if response.success?
